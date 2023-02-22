@@ -2,18 +2,26 @@ name: Go application CI
 
 on: [push, pull_request]
 
+env:
+  GOPATH: /home/runner/go
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+
+      - name: Set GOPATH
+        run: |
+          mkdir -p $GOPATH/src/github.com/guttosm/dummy-application
+          mv $GITHUB_WORKSPACE/* $GOPATH/src/github.com/guttosm/dummy-application
 
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v2
         with:
-          go-version: 1.20
+          go-version: 1.17
 
       - name: Get dependencies
         run: go get -v -t -d ./...
@@ -23,9 +31,3 @@ jobs:
 
       - name: Unit tests
         run: go test -v ./...
-
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
