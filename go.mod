@@ -1,4 +1,4 @@
-module example/web-service-gin
+module github.com/guttosm/dummy-application
 
 go 1.20
 
